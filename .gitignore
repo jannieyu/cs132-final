@@ -1,0 +1,2 @@
+# Don't commit front-end files in /public folder
+/public
