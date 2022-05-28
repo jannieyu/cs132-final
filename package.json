@@ -1,0 +1,19 @@
+{
+  "name": "cs132-final",
+  "version": "1.0.0",
+  "description": "Final project to create a jewelry e-commerce store.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jannieyu/cs132-final.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jannieyu/cs132-final/issues"
+  },
+  "homepage": "https://github.com/jannieyu/cs132-final#readme"
+}
