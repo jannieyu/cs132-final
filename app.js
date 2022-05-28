@@ -1,6 +1,7 @@
 "use strict";
 const express = require("express");
 const app = express();
+app.use(express.static("public"));
 
 // http://localhost:8000/hello
 app.get("/hello", function (req, res) {
