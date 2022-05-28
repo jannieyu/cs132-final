@@ -14,17 +14,17 @@ CREATE TABLE jewelry(
   id  INT PRIMARY KEY, 
   -- Product name should be descriptive, i.e. should adequately describe what the 
   -- jewelry item is
-  productName  VARCHAR(255),  
+  product_name  VARCHAR(255),  
   -- Describes the exact image path of the jewelry item
-  imgPath VARCHAR(255),
+  img_path VARCHAR(255),
   -- The type of jewelry, e.g. bracelet, necklace, ring, etc.
-  prodType VARCHAR(30),
+  prod_type VARCHAR(30),
   -- The price of the jewelry item, should have two decimal places
   price NUMERIC(2),
   -- The color of the jewelry item, e.g. silver, gold
   color VARCHAR(30),
   -- The date and time the product was added to the database
-  dateListed DATETIME, 
+  date_listed DATETIME, 
   -- The style of the jewelry item, e.g. formal, casual
   style VARCHAR(30) 
 );
