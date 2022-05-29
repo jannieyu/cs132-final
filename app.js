@@ -39,7 +39,6 @@ async function queryDB(qry) {
   let db;
   try {
     db = await getDB(); // connection error thrown in getDB();
-
     let rows = await db.query(qry);
     return rows;
   } catch (err) {
@@ -57,9 +56,7 @@ app.listen(PORT, () => {
 // Endpoint to get all jewelry
 app.get("/jewelry", function (req, res) {
   res.type("json"); // same as above
-  let t = queryDB("SELECT * FROM jewelry");
-  console.log(t);
-  res.send({});
+  queryDB("SELECT * FROM jewelry").then((val) => res.send(val));
 });
 
 // Endpoint to get jewelry with extra parameters
@@ -68,7 +65,6 @@ app.get("/jewelry", function (req, res) {
   let type = req.query["type"];
   let price = req.query["price"];
   let color = req.query["color"];
-  let dataListed = req.query["date-listed"];
   let style = req.query["style"];
 
   // Based on what parameters are specified in the query, return appropriate
