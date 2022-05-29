@@ -20,7 +20,7 @@ CREATE TABLE jewelry(
   -- The type of jewelry, e.g. bracelet, necklace, ring, etc.
   prod_type      VARCHAR(30)   NOT NULL,
   -- The price of the jewelry item, should have two decimal places
-  price         NUMERIC(2)    NOT NULL,
+  price         NUMERIC(4)    NOT NULL,
   -- The color of the jewelry item, e.g. silver, gold, red, blue
   color         VARCHAR(30)   NOT NULL,
   -- The style of the jewelry item, e.g. formal, casual
