@@ -16,17 +16,19 @@ CREATE TABLE jewelry(
   id            SERIAL PRIMARY KEY, 
   -- Product name should be descriptive, i.e. should adequately describe what the 
   -- jewelry item is
-  product_name   VARCHAR(200)  NOT NULL,  
+  product_name   VARCHAR(200)      NOT NULL,  
+  -- Little description/phase which comes with the jewelry item.
+  descrip        VARCHAR(300)      NOT NULL,
   -- Describes the exact image path of the jewelry item
-  img_path       VARCHAR(200)  NOT NULL,
+  img_path       VARCHAR(200)      NOT NULL,
   -- The type of jewelry, e.g. bracelet, necklace, ring, etc.
-  prod_type      VARCHAR(30)   NOT NULL,
+  prod_type      VARCHAR(30)       NOT NULL,
   -- The price of the jewelry item, should have two decimal places
-  price         DECIMAL(16, 2)    NOT NULL,
+  price          DECIMAL(16, 2)    NOT NULL,
   -- The color of the jewelry item, e.g. silver, gold, red, blue
-  color         VARCHAR(30)   NOT NULL,
+  color          VARCHAR(30)       NOT NULL,
   -- The style of the jewelry item, e.g. formal, casual
-  style         VARCHAR(30)   NOT NULL,
+  style          VARCHAR(30)       NOT NULL,
   CHECK (style IN ('casual', 'formal'))
 );
 
@@ -57,43 +59,43 @@ CREATE TABLE faq(
 );
 
 -- Format of insert statement: 
--- INSERT INTO jewelry VALUES(id, product_name, img_path, prod_type, price, color, 
--- dated_listed, style);
+-- INSERT INTO jewelry VALUES(id, product_name, descrip, img_path, prod_type, 
+-- price, color, dated_listed, style);
 
 -- Inserting rings into jewelry table
-INSERT INTO jewelry VALUES(1, 'Dual Band Ring', 
+INSERT INTO jewelry VALUES(1, 'Dual Band Ring', "Why have one when you can have two?",
 'img/rings/dual_band_ring.jpg', 'ring', 29.99,  'gold', 'casual');
-INSERT INTO jewelry VALUES(2, 'Dual Color Ring', 
+INSERT INTO jewelry VALUES(2, 'Dual Color Ring', "Silver? Gold? Por que no los dos?",
 'img/rings/dual_color_ring.jpg', 'ring', 19.99, 'dual', 'casual');
-INSERT INTO jewelry VALUES(3, 'Olive Leaf Ring', 
+INSERT INTO jewelry VALUES(3, 'Olive Leaf Ring', "For the nature-inclined.",
 'img/rings/olive_tree_ring.jpg', 'ring',  59.99, 'gold', 'casual');
-INSERT INTO jewelry VALUES(4, 'Pink Gem Ring', 
+INSERT INTO jewelry VALUES(4, 'Pink Gem Ring', "I'm feeling pink today!",
 'img/rings/pink_gem_ring.jpg', 'ring', 39.99,'pink', 'formal');
-INSERT INTO jewelry VALUES(5, 'Thick Crystal Crusted Gold Ring', 
+INSERT INTO jewelry VALUES(5, 'Thick Crystal Crusted Gold Ring', "This ring thicc.",
 'img/rings/thick_crusted_ring.jpg','ring',  29.99,  'gold', 'formal');
 
 -- Inserting earrings into jewelry table
-INSERT INTO jewelry VALUES(6, 'Blue Heart Earrings', 
+INSERT INTO jewelry VALUES(6, 'Blue Heart Earrings', "Feeling blue?",
 'img/earrings/blue_heart_earrings.jpg', 'earring', 29.99,'blue', 'casual');
-INSERT INTO jewelry VALUES(7, 'Dual Color Earrings', 
+INSERT INTO jewelry VALUES(7, 'Dual Color Earrings', "Goes great with a dual color ring.",
 'img/earrings/dual_color_earrings.jpg', 'earring', 39.99,'dual', 'formal');
-INSERT INTO jewelry VALUES(8, 'Flower Earrings', 
+INSERT INTO jewelry VALUES(8, 'Flower Earrings', "There's daisies growing on my ears!",
 'img/earrings/flower_earrings.jpg','earring',  49.99,  'silver', 'casual');
-INSERT INTO jewelry VALUES(9, 'Teardrop Earrings', 
+INSERT INTO jewelry VALUES(9, 'Teardrop Earrings', "Finish any classy look.",
 'img/earrings/teardrop.jpg', 'earring', 19.99,'brown', 'formal');
-INSERT INTO jewelry VALUES(10, 'Yellow Topaz Tooth Earrings', 
+INSERT INTO jewelry VALUES(10, 'Yellow Topaz Tooth Earrings', "Careful, these earrings bite!",
 'img/earrings/topaz_tooth_earrings.jpg','earring', 29.99, 'yellow', 'formal');
 
 -- Inserting necklaces into jewelry table
-INSERT INTO jewelry VALUES(11, 'Blue Heart Necklace', 
+INSERT INTO jewelry VALUES(11, 'Blue Heart Necklace', "Paint me like one of your French girls...",
 'img/necklaces/blue_heart_necklace.jpg','necklace',19.99,  'blue', 'formal');
-INSERT INTO jewelry VALUES(12, 'Silver Drop Necklace', 
+INSERT INTO jewelry VALUES(12, 'Silver Drop Necklace', "Perfect for a fancy dinner.",
 'img/necklaces/drop_necklace.jpg','necklace',  39.99, 'silver', 'formal');
-INSERT INTO jewelry VALUES(13, 'Thin Moon Cresent Necklace', 
+INSERT INTO jewelry VALUES(13, 'Thin Moon Cresent Necklace', "Add an element of mystery...",
 'img/necklaces/moon_necklace.jpg','necklace',19.99, 'pink', 'casual');
-INSERT INTO jewelry VALUES(14, 'Gold Ruby Necklace', 
+INSERT INTO jewelry VALUES(14, 'Gold Ruby Necklace', "Red and gold and red and gold!",
 'img/necklaces/ruby_necklace.jpg','necklace', 29.99, 'red', 'casual');
-INSERT INTO jewelry VALUES(15, 'Sweetheart Necklace', 
+INSERT INTO jewelry VALUES(15, 'Sweetheart Necklace', "For the girl next door",
 'img/necklaces/sweetheart_necklace.jpg','necklace', 59.99, 'silver', 'formal');
 
 -- Inserting FAQ table entries
