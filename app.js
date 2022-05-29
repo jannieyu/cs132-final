@@ -14,6 +14,7 @@
 "use strict";
 const express = require("express");
 const app = express();
+const jewelryData = getJewelryData();
 
 app.use(express.static("public"));
 const PORT = process.env.PORT || 8000;
@@ -21,10 +22,9 @@ app.listen(PORT, () => {
   console.log("Listening on port " + PORT + "...");
 });
 
-// http://localhost:8000/hello
 app.get("/jewelry", function (req, res) {
   res.type("json"); // same as above
-  res.send("Hello World!");
+  res.send(jewelryData);
 });
 
 //localhost:8000/
