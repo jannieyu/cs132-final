@@ -41,17 +41,17 @@ CREATE TABLE contact_info(
   time_submitted  DATETIME NOT NULL,
   -- The contact message body, i.e. what the user is reaching out for
   contact_msg     VARCHAR(500)  NOT NULL
-)
+);
 
 -- Create a table for FAQs
 CREATE TABLE faq(
   -- Unique identifier for the FAQ
   faq_id SERIAL PRIMARY KEY,
   -- Question which is asked 
-  question VARCHAR(200)  NOT NULL,
+  question VARCHAR(300)  NOT NULL,
   -- Answer for given question
-  answer VARCHAR(200)    NOT NULL
-)
+  answer VARCHAR(300)    NOT NULL
+);
 
 -- Format of insert statement: 
 -- INSERT INTO jewelry VALUES(id, product_name, img_path, prod_type, price, color, 
@@ -81,7 +81,7 @@ INSERT INTO jewelry VALUES(15, 'Sweetheart Necklace', 'img/necklaces/sweetheart_
 -- Format of FAQ entries
 -- INSERT_INTO faq VALUES(faq_id, question, anwer)
 INSERT INTO faq VALUES (1, "How long does shipping take?", "Shipping typically takes 2 weeks for U.S. orders. 
-  We don't ship internationally yet, but we're hoping to expand soon!");
+We don't ship internationally yet, but we're hoping to expand soon!");
 INSERT INTO faq VALUES (2, "What was the inspiration for this store?", "We made a jewelry store because 
   high-quality jewelry is typically hard to come by at affordable prices. We try to provide high-quality
   items at prices that are significantly lower than other brands.");
@@ -89,6 +89,6 @@ INSERT INTO faq VALUES (3, "What kind of jewelry do you guys offer?", "We offer 
   and earrings with precious metals and stones. We hope to offer bracelets and more niche jewelry types
   in the future!");
 INSERT INTO faq VALUES (4, "What's your return policy?", "We will take returns up to one month (30 days) after
-  purchase. After this period, returns cannot be made.")
+  purchase. After this period, returns cannot be made.");
 INSERT INTO faq VALUES (5, "Can I buy this jewelry in person?", "Unfortunately, no. We only offer our goods online.
-  We hope to open in-person stores within the next 5 years!")
+  We hope to open in-person stores within the next 5 years!");
