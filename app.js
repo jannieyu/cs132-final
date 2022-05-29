@@ -7,8 +7,6 @@
  * GET /jewelry
  * GET /jewelry/:random
  * GET /jewelry?type=__&price=__&color=__&dateListed=__&style=__
- * POST /contact
- * POST /addItem
  */
 
 "use strict";
