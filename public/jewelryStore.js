@@ -3,240 +3,167 @@
  * CS 132 Spring 2022
  * This is the js file for our final project, an e-commerce store which sells
  * jewelry. This file contains client-side code which allows users to switch
- * between views.
+ * between views and interact with UI elements.
  *
  */
 
 (function()  {
   "use strict";
 
-  // URLs to access dictionary and thesaurus APIs
-  let dictURLPrefix = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/";
-  let dictURLSuffix = "?key=87bbf23a-ed9e-44bd-8640-80c4fc952b46";
-  let thesURLPrefix = "https://www.dictionaryapi.com/api/v3/references/thesaurus/json/";
-  let thesURLSuffix = "?key=cbe366a6-53d0-467a-8aa1-cf3991df4dde";
-
-  // Colors for displaying synonyms and antonyms
-  let synColor;
-  let antColor;
+  // URLs to access server
+  const BASE_URL = "/";
 
   /**
-   * Function for initializing the Word Tree page. Creates UI elements and adds
-   * event listeners for the settings specified in the menu view as well as text
-   * input used to grow the tree.
+   * Function for initializing the home page. Creates UI elements and adds
+   * event listeners.
    */
   function init() {
-    let createBtn = id("create-btn");
-    let resetBtn = id("reset-btn");
+    // Add event listeners to dropdowns
+    let typeSelect = id("type-select");
+    let priceSelect = id("price-select");
+    let colorSelect = id("color-select")
+    let styleSelect = id("style-select");
 
-    createBtn.addEventListener("click", toggleView); 
-    createBtn.addEventListener("click", applyOptions);
-    resetBtn.addEventListener("click", toggleView);
-    resetBtn.addEventListener("click", clearTree);
+    let selects = [typeSelect, priceSelect, colorSelect, styleSelect];
+    for (const select of selects) {
+      select.addEventListener("change", getProducts);
+    }
+
+    // Add colors
+    addColorOptions();
+
+    // Add products to the main page
+    getProducts();
   }
 
-  /**
-   * Function to toggle views between the menu view and the game view.
-   */
-  function toggleView() {
-    const treeView = id("tree-view");
-    treeView.classList.toggle("hidden");
+  async function getProducts() {
+    // Clear out any old jewelry displays
+    let products = id("products");
+    products.innerHTML = "";
 
-    const menuView = id("menu-view");
-    menuView.classList.toggle("hidden");
-  }
+    let url = BASE_URL + "jewelry";
 
-  /**
-   * Function to clear the tree if the reset button is selected.
-   */
-  function clearTree() {
-    let tree = id("tree");
-    tree.innerHTML = "";
+    // Get the values of drop-downs
+    let type = id("type-select").value;
+    let priceLimit = id("price-select").value;
+    let color = id("color-select").value;
+    let style = id("style-select").value;
 
-    let currDefn = id("current-defn");
-    currDefn.innerHTML = "";
+    if (type || priceLimit || color || style) {
+      url += "?";
+    }
 
-    let errMsg = id("err-msg");
-    errMsg.innerHTML = "";
-  }
+    if (type) {
+      url += `&type=${type}`;
+    }
+    if (priceLimit) {
+      url +=  `&price=${priceLimit}`;
+    }
+    if (color) {
+      url += `&color=${color}`;
+    }
+    if (style) {
+      url += `&style=${style}`;
+    }
 
-  /**
-   * Function to apply the user's options specified in the menu view, such as the
-   * root word and the colors of antonyms or synonyms.
-   */
-  function applyOptions() {
-    const root = gen("btn");
-    root.id = "root-word";
-    root.textContent = id("root-word-input").value;
+    console.log(url);
 
-    root.addEventListener("click", addSynonym);
-    root.addEventListener("click", addAntonym);
-    root.addEventListener("mouseover", defineWord);
-    
-    let tree = id("tree");
-    tree.appendChild(root);
-
-    synColor = id("syn-color-picker").value;
-    antColor = id("ant-color-picker").value;
-  }
-
-  /**
-   * Function used to make requests to the dictionary API when defining a word.
-   */
-  async function defineWord() {
-    const baseWord = this.textContent;
-    
-    let wordData = await fetch(dictURLPrefix + baseWord + dictURLSuffix)
-    .then(checkStatus)
-    .then(resp => resp.json())
-    .catch(handleRequestError);
-
-    processDefn(baseWord, wordData);
-  }
-
-  /**
-   * Function used to process JSON object which contains dictionary information
-   * assicated with a base word.
-   * @param {*} baseWord - word for which the JSON object has additional information
-   * @param {*} dictJSON - JSON object which contains info about base word
-   */
-  function processDefn(baseWord, dictJSON) {
-    if (dictJSON.length &&
-        typeof(dictJSON[0]) != "string" &&
-        "shortdef" in dictJSON[0] &&
-        dictJSON[0].shortdef) {
-        const shortDef = dictJSON[0].shortdef[0];
-        showDefinition(baseWord, shortDef);
-    } else {
-      produceErrMsg("Word not found in dictionary.");
+    try {
+      let resp = await fetch(url);
+      resp = checkStatus(resp);
+      resp = await resp.json();
+      addProducts(resp);
+    } catch (err) {
+      handleRequestError(err);
     }
   }
 
   /**
-   * Function to display a word and its corresponding definition on the page.
-   * @param {string} baseWord - word whose definition is being shown
-   * @param {string} shortDef - definition of base word
+   * Populates the colors dropdown of the products page with elements of the form
+   * <option value="">Any color</option>
    */
-  function showDefinition(baseWord, shortDef) {
-    const defn = gen("p");
-    defn.id = "current-defn";
-    defn.textContent = baseWord + " : " + shortDef;
+  async function addColorOptions() {
+    let url = BASE_URL + "jewelry";
 
-    let currentDefn = id("current-defn");
-    currentDefn.parentNode.replaceChild(defn, currentDefn);
+    // Fetch the color options of the jewelry we have
+    try {
+      let resp = await fetch(url);
+      resp = checkStatus(resp);
+      resp = await resp.json();
+      addColorsHelper(resp);
+    } catch (err) {
+      handleRequestError(err);
+    }
   }
 
-  /**
-   * Function for adding a synonym of a word to the tree.
-   */
-  function addSynonym() {
-    const baseWord = this.textContent;
-    addRandomWord(baseWord, processSynonym);
-  }
+  function addColorsHelper(products) {
+    let colorSelect = id("color-select");
+    let currColors = [];
 
-  /**
-   * Function for adding an antonym of a word to the tree.
-   */
-  function addAntonym() {
-    const baseWord = this.textContent;
-    addRandomWord(baseWord, processAntonym);
-  }
+    for (const product of products) {
+      let colorChoice = gen("option");
+      colorChoice.value = product.color;
+      colorChoice.textContent = product.color;
 
-  /**
-   * Function used to make an async request to the thesaurus API to add a new
-   * word to the tree
-   * @param {string} baseWord - word used to lookup in the thesaurus
-   * @param {function} processWord - function used to process the resulting JSON object from
-   * making the request
-   */
-  async function addRandomWord(baseWord, processWord) {
-    let wordData = await fetch(thesURLPrefix + baseWord + thesURLSuffix)
-      .then(checkStatus)
-      .then(resp => resp.json())
-      .catch(handleRequestError);
-
-    processWord(baseWord, wordData);
-  }
-
-  /**
-   * Function for processing a JSON object by extracting the relevant synonyms
-   * and adding one of these to the tree randomly.
-   * @param {string} baseWord - word used to lookup in the thesaurus
-   * @param {JSON} thesJSON - JSON object returned by thesaurus request using 
-   * base word
-   */
-  function processSynonym(baseWord, thesJSON) {
-    if (thesJSON.length) {
-      if ("meta" in thesJSON[0] && 
-        "syns" in thesJSON[0].meta &&
-        thesJSON[0].meta.syns[0]) {
-        const synonyms = thesJSON[0].meta.syns[0];
-        const randomIndex = Math.floor(Math.random() * synonyms.length);
-        const synonym = synonyms[randomIndex];
-        addWord(synonym, synColor);
-      } else {
-        produceErrMsg("No synoynms for " + baseWord);
+      if (!(currColors.includes(product.color))) {
+        colorSelect.appendChild(colorChoice);
+        currColors.push(product.color);
       }
-    } else {
-      produceErrMsg("Word not found in dictionary.");
+    }
+  }
+
+  function addProducts(products) {
+    let productsSection = id("products"); 
+
+    for (const prodInfo of products) {
+      let prodName = prodInfo["product_name"];
+      let imgPath = prodInfo["img_path"];
+      let descrip = prodInfo.descrip;
+      let price = prodInfo.price;
+
+      let product = createProduct(prodName, imgPath, descrip, price);
+      productsSection.appendChild(product);
     }
   }
 
   /**
-   * Function for processing a JSON object by extracting the relevant antonyms
-   * and adding one of these to the tree randomly.
-   * @param {string} baseWord - word used to lookup in the thesaurus
-   * @param {JSON} thesJSON - JSON object returned by thesaurus request using 
-   * base word
+   * Function which creates a product of the following form:
+   * <article class="product">
+   *    <img src="img/gold_hoop_earrings.jpg">
+   *    <div class="product-info">
+   *      <p>Gold Hoop Earrings</p>
+   *      <p>$9.00</p>
+   *      <p>A little fun for a night out.</p>
+   *    </div>
+   *  </article>
    */
-  function processAntonym(baseWord, thesJSON) {
-    if (thesJSON.length) {
-      if ("meta" in thesJSON[0] && 
-        "ants" in thesJSON[0].meta &&
-        thesJSON[0].meta.ants[0]) {
-        const antonyms = thesJSON[0].meta.ants[0];
-        const randomIndex = Math.floor(Math.random() * antonyms.length);
-        const antonym = antonyms[randomIndex];
-        addWord(antonym, antColor);
-      } else {
-        produceErrMsg("No antonyms for " + baseWord);
-      }
-    } else {
-      produceErrMsg("Word not found in dictionary.");
-    }
-  }
+  function createProduct(prodName, imgPath, descrip, price) {
+    let productCard = gen("article");
+    productCard.classList.add("product");
 
-  /**
-   * Function for adding a word to the list of words in the word tree.
-   * Generates the associated element with event listeners to the tree.
-   * @param {string} word - word to be added to the list
-   * @param {string} wordColor - hex code for coloring the word
-   */
-  function addWord(word, wordColor) {
-    const branch = gen("div");
-    branch.class = "branch";
-    branch.textContent = word;
-
-    branch.addEventListener("click", addSynonym);
-    branch.addEventListener("click", addAntonym);
-    branch.addEventListener("mouseover", defineWord);
-    branch.style.color = wordColor;
-
-    let tree = id("tree");
-    tree.insertBefore(branch, tree.firstChild);
-  }
-
-  /**
-   * Function for producing an error message and displaying it on the page
-   * @param {string} msg - message to be displayed above tree
-   */
-  function produceErrMsg(msg) {
-    let newErr = gen("p");
-    newErr.id = "err-msg";
-    newErr.textContent = msg;
+    let productInfo = gen("div");
+    productInfo.classList.add("product-info");
     
-    let currErr = id("err-msg");
-    currErr.parentNode.replaceChild(newErr, currErr);
+    let productName = gen("p");
+    productName.textContent = prodName;
+
+    let productImg = gen("img");
+    productImg.src = imgPath;
+
+    let productPrice = gen("p");
+    productPrice.textContent = "$" + price;
+
+    let productDescrip = gen("p");
+    productDescrip.textContent = descrip;
+
+    productInfo.appendChild(productName);
+    productInfo.append(productPrice);
+    productInfo.append(productDescrip);
+
+    productCard.appendChild(productImg);
+    productCard.appendChild(productInfo);
+
+    return productCard;
   }
 
   /**
@@ -246,16 +173,15 @@
    * page.
    * @param {Error} err - the error details of the request.
    */
-     function handleRequestError(err) {
-      let newErr = gen("p");
-      newErr.id = "err-msg";
-      newErr.textContent = "There was an error requesting data from the Merriam-Webster service. " + 
-      "Please try again later. Error message: " + err;
-      
-      let currErr = id("err-msg");
-      currErr.parentNode.replaceChild(newErr, currErr);
-    }
+  function handleRequestError(err) {
+    let newErr = gen("p");
+    newErr.id = "err-msg";
+    newErr.textContent = "There was an error requesting data from the server. " + 
+    "Please try again later.";
+    
+    let currErr = id("err-msg");
+    currErr.parentNode.replaceChild(newErr, currErr);
+  }
   
-
   init();
 })();

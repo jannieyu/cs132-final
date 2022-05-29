@@ -82,7 +82,7 @@ INSERT INTO jewelry VALUES(7, 'Dual Color Earrings', "Goes great with a dual col
 INSERT INTO jewelry VALUES(8, 'Flower Earrings', "There's daisies growing on my ears!",
 'img/earrings/flower_earrings.jpg','earring',  49.99,  'silver', 'casual');
 INSERT INTO jewelry VALUES(9, 'Teardrop Earrings', "Finish any classy look.",
-'img/earrings/teardrop.jpg', 'earring', 19.99,'brown', 'formal');
+'img/earrings/teardrop_earrings.jpg', 'earring', 19.99,'brown', 'formal');
 INSERT INTO jewelry VALUES(10, 'Yellow Topaz Tooth Earrings', "Careful, these earrings bite!",
 'img/earrings/topaz_tooth_earrings.jpg','earring', 29.99, 'yellow', 'formal');
 
@@ -92,7 +92,7 @@ INSERT INTO jewelry VALUES(11, 'Blue Heart Necklace', "Paint me like one of your
 INSERT INTO jewelry VALUES(12, 'Silver Drop Necklace', "Perfect for a fancy dinner.",
 'img/necklaces/drop_necklace.jpg','necklace',  39.99, 'silver', 'formal');
 INSERT INTO jewelry VALUES(13, 'Thin Moon Cresent Necklace', "Add an element of mystery...",
-'img/necklaces/moon_necklace.jpg','necklace',19.99, 'pink', 'casual');
+'img/necklaces/moon_necklace.jpg','necklace',19.99, 'red', 'casual');
 INSERT INTO jewelry VALUES(14, 'Gold Ruby Necklace', "Red and gold and red and gold!",
 'img/necklaces/ruby_necklace.jpg','necklace', 29.99, 'red', 'casual');
 INSERT INTO jewelry VALUES(15, 'Sweetheart Necklace', "For the girl next door",

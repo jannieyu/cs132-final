@@ -26,6 +26,12 @@ app.use(express.json()); // built-in middleware
 // for parsing multipart/form-data (required with FormData)
 app.use(multer().none()); // multer middleware
 
+app.use(express.static("public"));
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log("Listening on port " + PORT + "...");
+});
+
 /**
  * Establishes a database connection to the jewelrydb and returns the database object.
  * Any errors that occur during connection should be caught in the function
@@ -71,45 +77,47 @@ async function queryDB(qry, inputs) {
   db.end(); // TypeError: Cannot read property 'end' of undefined
 }
 
-
-app.use(express.static("public"));
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log("Listening on port " + PORT + "...");
-});
-
 // Endpoint to get all jewelry
 app.get("/jewelry", async function (req, res) {
   res.type("json"); 
+
   let type = req.query["type"];
   let color = req.query["color"];
   let style = req.query["style"];
+  let priceLimit = req.query["price"];
 
   let input = [];
+  let queryRestrictions = [];
 
   // Append to the input list as necessary depending on which query parameters
   // are specified
   let qry = "SELECT * FROM jewelry";
-  if (type || color || style) {
+  if (type || color || style || priceLimit) {
     qry += " WHERE ";
     if (type) {
-      qry += "prod_type = ? ";
+      queryRestrictions.push("prod_type = ? ");
       input.push(type);
     }
     if (color) {
-      qry += "color = ? ";
+      queryRestrictions.push("color = ? ");
       input.push(color);
     }
     if (style) {
-      qry += "style = ? ";
+      queryRestrictions.push("style = ? ");
       input.push(style);
     }
+    if (priceLimit) {
+      queryRestrictions.push("price < ? ");
+      input.push(priceLimit);
+    }
   }
+
+  qry += queryRestrictions.join(" AND ");
 
   // Trying to extract the promisified query results, otherwise use error
   // handling
   try {
-    let val = await queryDB(qry, input)
+    let val = await queryDB(qry, input);
     res.send(val);
   } catch (err) {
     console.error("Could not retrieve query inputs."); 
