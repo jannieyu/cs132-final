@@ -1,3 +1,12 @@
 # Don't commit front-end files in /public folder
-/public
+/public/helpers.js
+/public/proposal.pdf
+/public/store.js
+/public/styles.css
+/public/wireframe.pdf
+/public/index.js
+
 /node_modules
+
+public/.DS_Store
+public/img/.DS_Store

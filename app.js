@@ -14,7 +14,12 @@
 "use strict";
 const express = require("express");
 const app = express();
+
 app.use(express.static("public"));
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log("Listening on port " + PORT + "...");
+});
 
 // http://localhost:8000/hello
 app.get("/jewelry", function (req, res) {
@@ -23,21 +28,21 @@ app.get("/jewelry", function (req, res) {
 });
 
 //localhost:8000/
-http: app.get("/", (req, res) => {
-  console.log("I got your request!");
-  // res.json also sets the response type to application/json appropriately
-  res.json({ msg: ["Hello", "world"] });
-});
+// http: app.get("/", (req, res) => {
+//   console.log("I got your request!");
+//   // res.json also sets the response type to application/json appropriately
+//   res.json({ msg: ["Hello", "world"] });
+// });
 
 // http://localhost:8000/jannie
-app.get("/:name", (req, res) => {
-  res.type("text"); // don't forget to set the response type to change from HTML default
-  let name = req.params["name"];
-  res.send(`Hello ${name}!`);
-});
+// app.get("/:name", (req, res) => {
+//   res.type("text"); // don't forget to set the response type to change from HTML default
+//   let name = req.params["name"];
+//   res.send(`Hello ${name}!`);
+// });
 
 // Example request using query parameters (optional for this path)
-
+// http://localhost:8000/cityInfo?state=CA&city=SD
 app.get("/cityInfo", (req, res) => {
   res.type("text");
   let state = req.query["state"];
@@ -56,9 +61,4 @@ app.get("/states/:state/cities/:city", (req, res) => {
   let state = req.params["state"];
   let city = req.params["city"];
   res.json({ state: state, city: city });
-});
-
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log("Listening on port " + PORT + "...");
 });
