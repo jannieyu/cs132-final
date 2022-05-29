@@ -13,10 +13,10 @@
 "use strict";
 const express = require("express");
 const app = express();
-
 const mysql = require("promise-mysql");
-
 const multer = require("multer");
+
+// Default input 
 
 // for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true })); // built-in middleware
@@ -37,7 +37,7 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "", // fill in with password
+    password: "mysqlpw", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
@@ -45,6 +45,13 @@ async function getDB() {
 
 // Once we set up the connection with required credentials, we try to connect so we
 // can query on the connected object.
+/**
+ * 
+ * @param {string} qry - SQL query to retrieve table rows from the jewelrydb 
+ * database 
+ * @param {Array} inputs - an array of inputs  
+ * @returns 
+ */
 async function queryDB(qry, inputs) {
   let db;
   try {
@@ -96,6 +103,15 @@ app.get("/jewelry", function (req, res) {
   queryDB(qry, input).then((val) => res.send(val));
 });
 
+// Endpoint to get information about just one product using id
+app.get("/jewelry/:id", (req, res, next) => {
+  res.type("json");
+  let qry = "SELECT * FROM jewelry WHERE id=?";
+  let input = [req.params.id];
+  queryDB(qry, input).then((val) => res.send(val));
+});
+
+// Endpoint used to post information from a contact request
 app.post("/contact", (req, res, next) => {
   let name = req.body.name;
   let email = req.body.email;
@@ -120,6 +136,7 @@ app.get("/jewelry/random", function (req, res) {
 // Endpoint to get faq 
 app.get("/faq", function (req, res) {
   res.type("json");
+  let input = [];
   let qry = "SELECT * FROM faq";
   queryDB(qry, input).then((val) => res.send(val));
 });
