@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS jewelrydb;
 USE jewelrydb;
 
 -- These clear the database so we can easily repopulate if needed.
+DROP TABLE IF EXISTS contact_info;
 DROP TABLE IF EXISTS jewelry;
 
 -- Represents a table of jewelry items, which can include different kinds and 
@@ -32,6 +33,8 @@ CREATE TABLE jewelry(
 CREATE TABLE contact_info(
   -- Unique identifier for the contact table entry
   contact_id      SERIAL PRIMARY KEY,
+
+  contact_name    VARCHAR(30) NOT NULL,
   -- email address for the contact
   email           VARCHAR(50)   NOT NULL, 
   -- time that the entry was made
