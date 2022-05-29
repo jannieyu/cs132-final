@@ -35,11 +35,17 @@ async function getDB() {
 
 // Once we set up the connection with required credentials, we try to connect so we
 // can query on the connected object.
-async function queryDB(qry) {
+async function queryDB(qry, inputs) {
   let db;
   try {
     db = await getDB(); // connection error thrown in getDB();
-    let rows = await db.query(qry);
+    let rows;
+    if (inputs.length != 0) {
+      rows = await db.query(qry, inputs);
+    } else {
+      rows = await db.query(qry);
+    }
+
     return rows;
   } catch (err) {
     console.log(err.message);
@@ -56,16 +62,33 @@ app.listen(PORT, () => {
 // Endpoint to get all jewelry
 app.get("/jewelry", function (req, res) {
   res.type("json"); // same as above
-  queryDB("SELECT * FROM jewelry").then((val) => res.send(val));
+  let type = req.query["type"];
+  let color = req.query["color"];
+  let style = req.query["style"];
+
+  let input = [];
+  let qry = "SELECT * FROM jewelry";
+  if (type || color || style) {
+    qry += " WHERE ";
+    if (type) {
+      qry += "prod_type = ? ";
+      input.push(type);
+    }
+    if (color) {
+      qry += "color = ? ";
+      input.push(color);
+    }
+    if (style) {
+      qry += "style = ? ";
+      input.push(style);
+    }
+  }
+  queryDB(qry, input).then((val) => res.send(val));
 });
 
 // Endpoint to get jewelry with extra parameters
 app.get("/jewelry", function (req, res) {
   res.type("json");
-  let type = req.query["type"];
-  let price = req.query["price"];
-  let color = req.query["color"];
-  let style = req.query["style"];
 
   // Based on what parameters are specified in the query, return appropriate
   // json
