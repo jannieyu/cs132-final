@@ -99,12 +99,14 @@ app.post("/contact", (req, res, next) => {
   let name = req.body.name;
   let email = req.body.email;
   let message = req.body.message;
-  let timestamp = new Date.toUTCString();
+  let timestamp = new Date();
   // validate parameters, then update message.json file with new data
-  qry =
-    "INSERT INTO contact_info (contact_name, email, message, timestamp)" +
+  let qry =
+    "INSERT INTO contact_info (contact_name, email, time_submitted, contact_msg)" +
     " VALUES(?, ?, ?, ?)";
-  input = [name, email, message, timestamp];
+  let input = [name, email, timestamp, message];
+  console.log(qry);
+  console.log(input);
 });
 
 // Endpoint to get random jewelry set
