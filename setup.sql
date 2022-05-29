@@ -26,5 +26,6 @@ CREATE TABLE jewelry(
   -- The date and time the product was added to the database
   dateListed    DATETIME      NOT NULL, 
   -- The style of the jewelry item, e.g. formal, casual
-  style         VARCHAR(30)   NOT NULL
+  style         VARCHAR(30)   NOT NULL,
+  CHECK (style IN ('casual', 'formal'))
 );
