@@ -11,21 +11,26 @@ DROP TABLE IF EXISTS jewelry;
 -- styles of jewelry
 CREATE TABLE jewelry(
   -- Unique identifier for each jewelry item. This will be an integer.
-  id            INT PRIMARY KEY, 
+  id            SERIAL PRIMARY KEY, 
   -- Product name should be descriptive, i.e. should adequately describe what the 
   -- jewelry item is
-  productName   VARCHAR(255)  NOT NULL,  
+  product_name   VARCHAR(255)  NOT NULL,  
   -- Describes the exact image path of the jewelry item
-  imgPath       VARCHAR(255)  NOT NULL,
+  img_path       VARCHAR(255)  NOT NULL,
   -- The type of jewelry, e.g. bracelet, necklace, ring, etc.
-  prodType      VARCHAR(30)   NOT NULL,
+  prod_type      VARCHAR(30)   NOT NULL,
   -- The price of the jewelry item, should have two decimal places
   price         NUMERIC(2)    NOT NULL,
   -- The color of the jewelry item, e.g. silver, gold
   color         VARCHAR(30)   NOT NULL,
   -- The date and time the product was added to the database
-  dateListed    DATETIME      NOT NULL, 
+  date_listed    DATETIME      NOT NULL, 
   -- The style of the jewelry item, e.g. formal, casual
   style         VARCHAR(30)   NOT NULL,
   CHECK (style IN ('casual', 'formal'))
 );
+
+-- Format of insert statement: 
+-- INSERT INTO jewelry VALUES(id, product_name, img_path, prod_type, price, color, 
+-- dated_listed, style);
+INSERT INTO jewelry VALUES(1, 'Thick Crystal Crusted Gold Ring', 'img/thick_crusted_ring.jpg');
