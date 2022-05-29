@@ -7,6 +7,7 @@
  * GET /jewelry
  * GET /jewelry/random
  * GET /jewelry?type=__&price=__&color=__&date-listed=__&style=__
+ * GET /faq
  */
 
 "use strict";
@@ -104,4 +105,11 @@ app.get("/jewelry/random", function (req, res) {
   res.type("json");
   // Return a random set of jewelry
   res.send();
+});
+
+// Endpoint to get faq 
+app.get("/faq", function (req, res) {
+  res.type("json");
+  let qry = "SELECT * FROM faq";
+  queryDB(qry, input).then((val) => res.send(val));
 });
