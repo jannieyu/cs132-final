@@ -1,11 +1,24 @@
+/**
+ * @author Jennie Chung, Jannie Yu
+ * CS132 Spring 2022
+ * 
+ * Server side js code for jewelry store API. 
+ * This API has the following endpoints:
+ * GET /jewelry
+ * GET /jewelry/:random
+ * GET /jewelry?type=__&price=__&color=__&dateListed=__&style=__
+ * POST /contact
+ * POST /addItem
+ */
+
 "use strict";
 const express = require("express");
 const app = express();
 app.use(express.static("public"));
 
 // http://localhost:8000/hello
-app.get("/hello", function (req, res) {
-  res.type("text"); // same as above
+app.get("/jewelry", function (req, res) {
+  res.type("json"); // same as above
   res.send("Hello World!");
 });
 
