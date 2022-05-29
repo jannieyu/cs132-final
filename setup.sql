@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS jewelrydb;
 USE jewelrydb;
 
 -- These clear the database so we can easily repopulate if needed.
+DROP TABLE IF EXISTS contact;
 DROP TABLE IF EXISTS jewelry;
 
 -- Represents a table of jewelry items, which can include different kinds and 
@@ -26,6 +27,20 @@ CREATE TABLE jewelry(
   -- The style of the jewelry item, e.g. formal, casual
   style         VARCHAR(30)   NOT NULL,
   CHECK (style IN ('casual', 'formal'))
+);
+
+-- Represents a table of jewelry items, which can include different kinds and 
+-- styles of jewelry
+CREATE TABLE contact(
+  -- Unique identifier for each jewelry item. This will be an integer.
+  id            SERIAL PRIMARY KEY, 
+  -- Product name should be descriptive, i.e. should adequately describe what the 
+  -- jewelry item is
+  contact_name   VARCHAR(30)  NOT NULL,  
+  -- Describes the exact image path of the jewelry item
+  email       VARCHAR(30)  NOT NULL,
+  -- The type of jewelry, e.g. bracelet, necklace, ring, etc.
+  contact_message      VARCHAR(1000)   NOT NULL,
 );
 
 -- Format of insert statement: 

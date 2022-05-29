@@ -15,6 +15,15 @@ const app = express();
 
 const mysql = require("promise-mysql");
 
+const multer = require("multer");
+
+// for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true })); // built-in middleware
+// for parsing application/json
+app.use(express.json()); // built-in middleware
+// for parsing multipart/form-data (required with FormData)
+app.use(multer().none()); // multer middleware
+
 /**
  * Establishes a database connection to the jewelrydb and returns the database object.
  * Any errors that occur during connection should be caught in the function
@@ -86,17 +95,16 @@ app.get("/jewelry", function (req, res) {
   queryDB(qry, input).then((val) => res.send(val));
 });
 
-// Endpoint to get jewelry with extra parameters
-app.get("/jewelry", function (req, res) {
-  res.type("json");
-
-  // Based on what parameters are specified in the query, return appropriate
-  // json
-  if (type) {
-    res.send();
-  } else {
-    res.status(400).send("Missing required state and city parameters.");
-  }
+app.post("/contact", (req, res, next) => {
+  let name = req.body.name;
+  let email = req.body.email;
+  let message = req.body.message;
+  let timestamp = new Date.toUTCString();
+  // validate parameters, then update message.json file with new data
+  qry =
+    "INSERT INTO contact_info (contact_name, email, message, timestamp)" +
+    " VALUES(?, ?, ?, ?)";
+  input = [name, email, message, timestamp];
 });
 
 // Endpoint to get random jewelry set
