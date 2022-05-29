@@ -10,10 +10,28 @@
  */
 
 "use strict";
-const fs = require("fs");
-const fsp = require("fs/promises"); // fsp just for demo
 const express = require("express");
 const app = express();
+
+const mysql = require("mysql");
+
+// Define the credentials for the database connection
+let connection = mysql.createConnection({
+  host: "localhost",
+  port: "3306", // you can find the port in phpMyAdmin or your mysql config
+  user: "root",
+  password: "",
+  database: "jewelrydb",
+});
+
+// Once we set up the connection with required credentials, we try to connect so we
+// can query on the connected object.
+connection.connect(function (err) {
+  if (err) {
+    throw err;
+  }
+  console.log("Connected!");
+});
 
 const jewelryData = [
   {
@@ -94,9 +112,9 @@ app.get("/jewelry", function (req, res) {
   } else {
     res.status(400).send("Missing required state and city parameters.");
   }
-}); 
+});
 
-// Endpoint to get random jewelry set 
+// Endpoint to get random jewelry set
 app.get("/jewelry/random", function (req, res) {
   res.type("json");
   // Return a random set of jewelry

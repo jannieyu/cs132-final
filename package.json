@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/jannieyu/cs132-final#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "mysql": "^2.18.1",
+    "promise-mysql": "^5.2.0"
   }
 }
