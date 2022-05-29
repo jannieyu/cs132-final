@@ -20,7 +20,7 @@ let connection = mysql.createConnection({
   host: "localhost",
   port: "3306", // you can find the port in phpMyAdmin or your mysql config
   user: "root",
-  password: "",
+  password: "pw",
   database: "jewelrydb",
 });
 
