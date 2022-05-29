@@ -13,76 +13,40 @@
 const express = require("express");
 const app = express();
 
-const mysql = require("mysql");
+const mysql = require("promise-mysql");
 
-// Define the credentials for the database connection
-let connection = mysql.createConnection({
-  host: "localhost",
-  port: "3306", // you can find the port in phpMyAdmin or your mysql config
-  user: "root",
-  password: "",
-  database: "jewelrydb",
-});
+/**
+ * Establishes a database connection to the jewelrydb and returns the database object.
+ * Any errors that occur during connection should be caught in the function
+ * that calls this one.
+ * @returns {Object} - The database object for the connection.
+ */
+async function getDB() {
+  const db = await mysql.createConnection({
+    // Variables for connections to the database.
+    host: "localhost", // fill in with server name
+    port: "3306", // fill in with a port (will be different mac/pc)
+    user: "root", // fill in with username
+    password: "", // fill in with password
+    database: "jewelrydb", // fill in with db name
+  });
+  return db;
+}
 
 // Once we set up the connection with required credentials, we try to connect so we
 // can query on the connected object.
-connection.connect(function (err) {
-  if (err) {
-    throw err;
-  }
-  console.log("Connected!");
-});
+async function queryDB(qry) {
+  let db;
+  try {
+    db = await getDB(); // connection error thrown in getDB();
 
-const jewelryData = [
-  {
-    productName: "Thick Crystal Crusted Gold Ring",
-    image: "img/thick_crusted_ring.jpg",
-    type: "ring",
-    price: 29.99,
-    color: "gold",
-    style: "casual",
-  },
-  {
-    productName: "Yellow Topaz Tooth Earrings",
-    image: "img/topaz_tooth_earrings.jpg",
-    type: "earring",
-    price: 39.99,
-    color: "yellow",
-    style: "formal",
-  },
-  {
-    productName: "Olive Leaf Ring",
-    image: "img/olive_tree_ring.jpg",
-    type: "ring",
-    price: 59.99,
-    color: "gold",
-    style: "casual",
-  },
-  {
-    productName: "Thin Moon Cresent Necklace",
-    image: "img/moon_necklace.jpg",
-    type: "necklace",
-    price: 19.99,
-    color: "pink",
-    style: "casual",
-  },
-  {
-    productName: "Gold Ruby Necklace",
-    image: "img/ruby_necklace.jpg",
-    type: "necklace",
-    price: 29.99,
-    color: "red",
-    style: "casual",
-  },
-  {
-    productName: "Silver Drop Necklace",
-    image: "img/drop_necklace.jpg",
-    type: "necklace",
-    price: 39.99,
-    color: "silver",
-    style: "formal",
-  },
-];
+    let rows = await db.query(qry);
+    return rows;
+  } catch (err) {
+    console.log(err.message);
+  }
+  db.end(); // TypeError: Cannot read property 'end' of undefined
+}
 
 app.use(express.static("public"));
 const PORT = process.env.PORT || 8000;
@@ -93,7 +57,9 @@ app.listen(PORT, () => {
 // Endpoint to get all jewelry
 app.get("/jewelry", function (req, res) {
   res.type("json"); // same as above
-  res.send(jewelryData);
+  let t = queryDB("SELECT * FROM jewelry");
+  console.log(t);
+  res.send({});
 });
 
 // Endpoint to get jewelry with extra parameters

@@ -23,8 +23,6 @@ CREATE TABLE jewelry(
   price         NUMERIC(2)    NOT NULL,
   -- The color of the jewelry item, e.g. silver, gold
   color         VARCHAR(30)   NOT NULL,
-  -- The date and time the product was added to the database
-  date_listed    DATETIME      NOT NULL, 
   -- The style of the jewelry item, e.g. formal, casual
   style         VARCHAR(30)   NOT NULL,
   CHECK (style IN ('casual', 'formal'))
@@ -33,5 +31,4 @@ CREATE TABLE jewelry(
 -- Format of insert statement: 
 -- INSERT INTO jewelry VALUES(id, product_name, img_path, prod_type, price, color, 
 -- dated_listed, style);
-INSERT INTO jewelry VALUES(1, 'Thick Crystal Crusted Gold Ring', 'img/thick_crusted_ring.jpg',
-  'ring', price: 29.99, color: 'gold', 'casual');
+INSERT INTO jewelry VALUES(1, 'Thick Crystal Crusted Gold Ring', 'img/thick_crusted_ring.jpg', 'ring', 29.99, 'gold', 'casual');
