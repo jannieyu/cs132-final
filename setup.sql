@@ -7,6 +7,7 @@ USE jewelrydb;
 -- These clear the database so we can easily repopulate if needed.
 DROP TABLE IF EXISTS contact_info;
 DROP TABLE IF EXISTS jewelry;
+DROP TABLE IF EXISTS faq;
 
 -- Represents a table of jewelry items, which can include different kinds and 
 -- styles of jewelry
@@ -32,7 +33,7 @@ CREATE TABLE jewelry(
 -- Create a table for contact information
 CREATE TABLE contact_info(
   -- Unique identifier for the contact table entry
-  contact_id      SERIAL PRIMARY KEY,
+  id      SERIAL PRIMARY KEY,
 
   contact_name    VARCHAR(30) NOT NULL,
   -- email address for the contact
@@ -50,7 +51,7 @@ CREATE TABLE faq(
   -- Question which is asked 
   question VARCHAR(300)  NOT NULL,
   -- Answer for given question
-  answer VARCHAR(300)    NOT NULL
+  answer VARCHAR(200)    NOT NULL
 );
 
 -- Format of insert statement: 
@@ -80,15 +81,8 @@ INSERT INTO jewelry VALUES(15, 'Sweetheart Necklace', 'img/necklaces/sweetheart_
 
 -- Format of FAQ entries
 -- INSERT_INTO faq VALUES(faq_id, question, anwer)
-INSERT INTO faq VALUES (1, "How long does shipping take?", "Shipping typically takes 2 weeks for U.S. orders. 
-We don't ship internationally yet, but we're hoping to expand soon!");
-INSERT INTO faq VALUES (2, "What was the inspiration for this store?", "We made a jewelry store because 
-  high-quality jewelry is typically hard to come by at affordable prices. We try to provide high-quality
-  items at prices that are significantly lower than other brands.");
-INSERT INTO faq VALUES (3, "What kind of jewelry do you guys offer?", "We offer a variety of rings, necklaces,
-  and earrings with precious metals and stones. We hope to offer bracelets and more niche jewelry types
-  in the future!");
-INSERT INTO faq VALUES (4, "What's your return policy?", "We will take returns up to one month (30 days) after
-  purchase. After this period, returns cannot be made.");
-INSERT INTO faq VALUES (5, "Can I buy this jewelry in person?", "Unfortunately, no. We only offer our goods online.
-  We hope to open in-person stores within the next 5 years!");
+INSERT INTO faq VALUES (1, "How long does shipping take?", "Shipping typically takes 2 weeks for U.S. orders. We don't ship internationally yet, but we're hoping to expand soon!");
+INSERT INTO faq VALUES (2, "What was the inspiration for this store?", "We made a jewelry store because high-quality jewelry is typically hard to come by at affordable prices. We try to provide high-quality items at prices that are significantly lower than other brands.");
+INSERT INTO faq VALUES (3, "What kind of jewelry do you guys offer?", "We offer a variety of rings, necklaces, and earrings with precious metals and stones. We hope to offer bracelets and more niche jewelry types in the future!");
+INSERT INTO faq VALUES (4, "What's your return policy?", "We will take returns up to one month (30 days) after purchase. After this period, returns cannot be made.");
+INSERT INTO faq VALUES (5, "Can I buy this jewelry in person?", "Unfortunately, no. We only offer our goods online. We hope to open in-person stores within the next 5 years!");
