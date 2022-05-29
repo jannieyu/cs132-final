@@ -33,4 +33,5 @@ CREATE TABLE jewelry(
 -- Format of insert statement: 
 -- INSERT INTO jewelry VALUES(id, product_name, img_path, prod_type, price, color, 
 -- dated_listed, style);
-INSERT INTO jewelry VALUES(1, 'Thick Crystal Crusted Gold Ring', 'img/thick_crusted_ring.jpg');
+INSERT INTO jewelry VALUES(1, 'Thick Crystal Crusted Gold Ring', 'img/thick_crusted_ring.jpg',
+  'ring', price: 29.99, color: 'gold', 'casual');
