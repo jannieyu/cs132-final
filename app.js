@@ -167,7 +167,7 @@ app.post("/contact", async function (req, res) {
   // handling
   try {
     let val = await queryDB(qry, input);
-    res.send("SUCCESS!");
+    res.send("Message successfully sent.");
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }

@@ -4,8 +4,7 @@
 /public/store.js
 /public/styles.css
 /public/wireframe.pdf
-/public/index.html
-/public/index.js
+/public/contact_page.html
 
 /public/index.html
 /public/products.html
@@ -18,3 +17,6 @@
 
 public/.DS_Store
 public/img/.DS_Store
+public/img/earrings/.DS_Store
+public/img/necklaces/.DS_Store
+public/img/rings/.DS_Store

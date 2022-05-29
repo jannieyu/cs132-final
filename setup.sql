@@ -5,9 +5,9 @@ CREATE DATABASE IF NOT EXISTS jewelrydb;
 USE jewelrydb;
 
 -- These clear the database so we can easily repopulate if needed.
--- DROP TABLE IF EXISTS contact_info;
--- DROP TABLE IF EXISTS jewelry;
--- DROP TABLE IF EXISTS faq;
+DROP TABLE IF EXISTS contact_info;
+DROP TABLE IF EXISTS jewelry;
+DROP TABLE IF EXISTS faq;
 
 -- Represents a table of jewelry items, which can include different kinds and 
 -- styles of jewelry
