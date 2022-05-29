@@ -16,7 +16,8 @@ const app = express();
 const mysql = require("promise-mysql");
 const multer = require("multer");
 
-// Default input 
+// Default input list for queryDB function
+const defaultInput = [];
 
 // for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true })); // built-in middleware
@@ -70,6 +71,7 @@ async function queryDB(qry, inputs) {
   db.end(); // TypeError: Cannot read property 'end' of undefined
 }
 
+
 app.use(express.static("public"));
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
@@ -77,13 +79,16 @@ app.listen(PORT, () => {
 });
 
 // Endpoint to get all jewelry
-app.get("/jewelry", function (req, res) {
-  res.type("json"); // same as above
+app.get("/jewelry", async function (req, res) {
+  res.type("json"); 
   let type = req.query["type"];
   let color = req.query["color"];
   let style = req.query["style"];
 
   let input = [];
+
+  // Append to the input list as necessary depending on which query parameters
+  // are specified
   let qry = "SELECT * FROM jewelry";
   if (type || color || style) {
     qry += " WHERE ";
@@ -100,23 +105,38 @@ app.get("/jewelry", function (req, res) {
       input.push(style);
     }
   }
-  queryDB(qry, input).then((val) => res.send(val));
+
+  // Trying to extract the promisified query results, otherwise use error
+  // handling
+  try {
+    let val = await queryDB(qry, input)
+    res.send(val);
+  } catch (err) {
+    console.error("Could not retrieve query inputs."); 
+  }
 });
 
 // Endpoint to get information about just one product using id
-app.get("/jewelry/:id", (req, res, next) => {
+app.get("/jewelry/:id", async function (req, res) {
   res.type("json");
   let qry = "SELECT * FROM jewelry WHERE id=?";
   let input = [req.params.id];
-  queryDB(qry, input).then((val) => res.send(val));
+
+  try {
+    let val = await queryDB(qry, input)
+    res.send(val);
+  } catch (err) {
+    console.error("Could not retrieve query inputs."); 
+  }
 });
 
 // Endpoint used to post information from a contact request
-app.post("/contact", (req, res, next) => {
+app.post("/contact", function (req, res) {
   let name = req.body.name;
   let email = req.body.email;
   let message = req.body.message;
   let timestamp = new Date();
+
   // validate parameters, then update message.json file with new data
   let qry =
     "INSERT INTO contact_info (contact_name, email, time_submitted, contact_msg)" +
@@ -127,16 +147,46 @@ app.post("/contact", (req, res, next) => {
 });
 
 // Endpoint to get random jewelry set
-app.get("/jewelry/random", function (req, res) {
+app.get("/random", async function (req, res) {
   res.type("json");
+
   // Return a random set of jewelry
-  res.send();
+  const unionString = "UNION ALL ";
+  const randString = "ORDER BY RAND() LIMIT 1 "
+
+  // Select a random necklace
+  let qry = "(SELECT * FROM jewelry WHERE prod_type='necklace' ";
+  qry += randString + ")" + unionString;
+
+  // Select a random earring
+  qry += "(SELECT * FROM jewelry WHERE prod_type='earring' "
+  qry += randString +  ")" + unionString;
+
+  // Select a random ring 
+  qry += "(SELECT * FROM jewelry WHERE prod_type='ring' "
+  qry += randString + ")";
+  
+  // Trying to extract the promisified query results, otherwise use error
+  // handling
+  try {
+    let val = await queryDB(qry, defaultInput)
+    res.send(val);
+  } catch (err) {
+    console.error("Could not retrieve query inputs."); 
+  }
 });
 
 // Endpoint to get faq 
-app.get("/faq", function (req, res) {
+app.get("/faq", async function (req, res) {
   res.type("json");
-  let input = [];
   let qry = "SELECT * FROM faq";
-  queryDB(qry, input).then((val) => res.send(val));
+
+  // Trying to extract the promisified query results, otherwise use error
+  // handling
+  try {
+    let val = await queryDB(qry, defaultInput)
+    res.send(val);
+  } catch (err) {
+    console.error("Could not retrieve query inputs."); 
+  }
 });
