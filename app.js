@@ -49,7 +49,7 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "mysqlpw", // fill in with password
+    password: "", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
@@ -113,6 +113,7 @@ app.get("/jewelry", async function (req, res, next) {
       rows = await db.query(qry, input);
     }
     db.end();
+    res.send(rows);
   } catch (err) {
     res.status(SERVER_ERR_CODE);
     err.message = SERVER_ERROR;
