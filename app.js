@@ -17,9 +17,9 @@ const mysql = require("promise-mysql");
 const multer = require("multer");
 
 const SERVER_ERR_CODE = 500;
+const CLIENT_ERR_CODE = 400;
 const SERVER_ERROR =
   "Something went wrong on the server, please try again later.";
-const CLIENT_ERR_CODE = 400;
 const CLIENT_ERROR =
   "Bad client request; missing parameters. Please try again.";
 const NO_INPUT = [];
@@ -32,6 +32,7 @@ app.use(express.json()); // built-in middleware
 app.use(multer().none()); // multer middleware
 
 app.use(express.static("public"));
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log("Listening on port " + PORT + "...");
@@ -49,48 +50,19 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "mysqlpw", // fill in with password
+    password: "", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
 }
 
-// Once we set up the connection with required credentials, we try to connect so we
-// can query on the connected object.
-/**
- *
- * @param {string} qry - SQL query to retrieve table rows from the jewelrydb
- * database
- * @param {Array} inputs - an array of inputs
- * @returns
- */
-async function queryDB(qry, inputs) {
-  let db;
-  try {
-    db = await getDB(); // connection error thrown in getDB();
-    let rows;
-    if (inputs.length != 0) {
-      rows = await db.query(qry, inputs);
-    } else {
-      rows = await db.query(qry);
-    }
-
-    return rows;
-  } catch (err) {
-    console.log(err.message);
-  }
-  db.end(); // TypeError: Cannot read property 'end' of undefined
-}
-
 // Endpoint to get all jewelry
 app.get("/jewelry", async function (req, res) {
   res.type("json");
-
   let type = req.query["type"];
   let color = req.query["color"];
   let style = req.query["style"];
   let priceLimit = req.query["price"];
-
   let input = [];
   let queryRestrictions = [];
 
@@ -121,13 +93,24 @@ app.get("/jewelry", async function (req, res) {
 
   // Trying to extract the promisified query results, otherwise use error
   // handling
+  let db;
   try {
-    let val = await queryDB(qry, input);
-    res.send(val);
+    db = await getDB(); // connection error thrown in getDB();
+    let rows;
+    if (input == NO_INPUT) {
+      rows = await db.query(qry);
+    } else {
+      rows = await db.query(qry, input);
+    }
+    if (rows.length !== 0) {
+      res.send(rows);
+    } else {
+      res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    }
+    db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-
 });
 
 // Endpoint to get information about just one product using id
@@ -136,24 +119,25 @@ app.get("/jewelry/:id", async function (req, res) {
   let qry = "SELECT * FROM jewelry WHERE id=?";
   let input = [req.params.id];
 
+  let db;
   try {
-    let val = await queryDB(qry, input);
-
+    db = await getDB();
+    let rows = await db.query(qry, input);
     // Check for empty values and return 200/400 error
-    if (val.length !== 0) {
-      res.send(val);
+    if (rows.length !== 0) {
+      res.send(rows);
     } else {
       res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
     }
+    db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
 });
 
 // Endpoint used to post information from a contact request
-app.post("/contact", async function (req, res) {
+app.post("/contact", async function (req, res, next) {
   res.type("text");
-
   let name = req.body.name;
   let email = req.body.email;
   let message = req.body.message;
@@ -162,19 +146,24 @@ app.post("/contact", async function (req, res) {
   let qry =
     "INSERT INTO contact_info (contact_name, email, time_submitted, contact_msg)" +
     " VALUES(?, ?, ?, ?)";
-  let input = [name, email, timestamp, message];
-  console.log(qry);
-  console.log(input);
+  let input = [
+    name.toString(),
+    email.toString(),
+    timestamp,
+    message.toString(),
+  ];
 
   if (!(name && email && message && timestamp)) {
-    res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    res.status(CLIENT_ERR_CODE);
   }
-
   // Trying to extract the promisified query results, otherwise use error
   // handling
+  let db;
   try {
-    let val = await queryDB(qry, input);
-    res.send("Message successfully sent.");
+    db = await getDB();
+    let rows = await db.query(qry, input);
+    res.send("Message successfully sent! We will look into it shortly.");
+    db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
@@ -202,15 +191,16 @@ app.get("/random", async function (req, res) {
 
   // Trying to extract the promisified query results, otherwise use error
   // handling
+  let db;
   try {
-    let val = await queryDB(qry, NO_INPUT);
-
-    // Check for empty values and return 200/400 error
-    if (val.length !== 0) {
-      res.send(val);
+    db = await getDB();
+    let rows = await db.query(qry);
+    if (rows.length !== 0) {
+      res.send(rows);
     } else {
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
     }
+    db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
@@ -223,15 +213,17 @@ app.get("/faq", async function (req, res) {
 
   // Trying to extract the promisified query results, otherwise use error
   // handling
+  let db;
   try {
-    let val = await queryDB(qry, NO_INPUT);
-
+    db = await getDB();
+    let val = await db.query(qry);
     // Check for empty values and return 200/400 error
     if (val.length !== 0) {
       res.send(val);
     } else {
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
     }
+    db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
