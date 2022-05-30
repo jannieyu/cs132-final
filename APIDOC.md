@@ -23,12 +23,17 @@ below.
 ```
 
 **Error Handling:**
+A 400 error code is sent in the response if the request has an invalid field
+filled in a category.
+
 A 500 error code is sent in the response if the server failed to retrieve the 
 query. No error code is sent in the response if the query returns empty. Instead,
 an empty list is returned.
 
 **Error Output:**
-Something went wrong on the server, please try again later.
+400 code error:
+
+500 code error: Internal server error, please try again later.
 
 ## jewelry/id
 **Request Format:** /jewelry/id
@@ -54,10 +59,10 @@ every valid id should result in a query result from the database.
 
 **Error Output:**
 If invalid query:
-Bad client request; missing parameters. Please try again.
+Bad client request: jewelry does not exist.
 
 If error is produced in retrieving from the database:
-Something went wrong on the server, please try again later.
+Internal server error, please try again later.
 
 ## contact
 **Request Format:** /contact
@@ -90,12 +95,16 @@ let resp = await fetch(url, {
 "Message successfully sent."
 
 **Error Handling:**
+A 400 error code is sent in the response if the post request is incomplete.
 A 500 error code is sent in the response if the post request failed, i.e. the 
 data could not be inserted into the database. No error code is sent in the 
 response if the contact information is successfully added to the database. 
 
 **Error Output:**
-Something went wrong on the server, please try again later.
+400 error code: Bad client request: empty POST parameters name, email, or 
+message in /contact.
+
+500 error code: Internal server error, please try again later.
 
 ## random
 **Request Format:** /random
@@ -114,7 +123,7 @@ A 500 error code is sent in the response if the server failed to retrieve the
 query or the query returns empty. 
 
 **Error Output:**
-Something went wrong on the server, please try again later.
+Internal server error, please try again later.
 
 ```json
 [{"id":14,"product_name":"Gold Ruby Necklace","descrip":"Red and gold and red and gold!","img_path":"img/necklaces/ruby_necklace.jpg","prod_type":"necklace","price":29.99,"color":"red","style":"casual"},{"id":6,"product_name":"Blue Heart Earrings","descrip":"Feeling blue?","img_path":"img/earrings/blue_heart_earrings.jpg","prod_type":"earring","price":29.99,"color":"blue","style":"casual"},{"id":1,"product_name":"Dual Band Ring","descrip":"Why have one when you can have two?","img_path":"img/rings/dual_band_ring.jpg","prod_type":"ring","price":29.99,"color":"gold","style":"casual"}]
@@ -125,7 +134,7 @@ A 500 error code is sent in the response if the server failed to retrieve the
 query or the query returns empty. 
 
 **Error Output:**
-Something went wrong on the server, please try again later.
+Internal server error, please try again later.
 
 ## faq
 **Request Format:** /faq
@@ -149,4 +158,4 @@ A 500 error code is sent in the response if the server failed to retrieve the
 query or the query returns empty. 
 
 **Error Output:**
-Something went wrong on the server, please try again later.
+Internal server error, please try again later.
