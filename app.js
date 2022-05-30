@@ -50,7 +50,7 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "mysqlpw", // fill in with password
+    password: "", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
@@ -96,14 +96,17 @@ app.get("/jewelry", async function (req, res) {
   let db;
   try {
     db = await getDB(); // connection error thrown in getDB();
-    console.log(db);
     let rows;
     if (input == NO_INPUT) {
       rows = await db.query(qry);
     } else {
       rows = await db.query(qry, input);
     }
-    res.send(rows);
+    if (rows.length !== 0) {
+      res.send(rows);
+    } else {
+      res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    }
     db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -120,7 +123,12 @@ app.get("/jewelry/:id", async function (req, res) {
   try {
     db = await getDB();
     let rows = await db.query(qry, input);
-    res.send(rows);
+    // Check for empty values and return 200/400 error
+    if (rows.length !== 0) {
+      res.send(rows);
+    } else {
+      res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    }
     db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -187,7 +195,11 @@ app.get("/random", async function (req, res) {
   try {
     db = await getDB();
     let rows = await db.query(qry);
-    res.send(rows);
+    if (rows.length !== 0) {
+      res.send(rows);
+    } else {
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
     db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -205,7 +217,12 @@ app.get("/faq", async function (req, res) {
   try {
     db = await getDB();
     let val = await db.query(qry);
-    res.send(val);
+    // Check for empty values and return 200/400 error
+    if (val.length !== 0) {
+      res.send(val);
+    } else {
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
     db.end();
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
