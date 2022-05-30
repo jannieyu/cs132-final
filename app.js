@@ -56,6 +56,64 @@ async function getDB() {
 }
 
 /**
+ * Function to validate jewelry type.
+ * @param {String} type - jewelry type, e.g. necklace, ring
+ * @returns boolean - true if valid, false otherwise
+ */
+function validJewelryType(type) {
+  if (!(type == "necklace" || type == "ring" || type == "earring")) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Function to validate jewelry color.
+ * @param {String} color - jewelry color, e.g. red, yellow
+ * @returns boolean - true if valid, false otherwise
+ */
+function validJewelryColor(color) {
+  if (
+    !(
+      color == "red" ||
+      color == "yellow" ||
+      color == "gold" ||
+      color == "blue" ||
+      color == "silver" ||
+      color == "brown" ||
+      color == "dual"
+    )
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Function to validate jewelry style.
+ * @param {String} style - jewelry style, e.g. casual, formal
+ * @returns boolean - true if valid, false otherwise
+ */
+function validJewelryStyle(style) {
+  if (!(style == "casual" || style == "formal")) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Function to validate jewelry price limit.
+ * @param {number} price - jewelry price limit
+ * @returns boolean - true if valid, false otherwise
+ */
+function validJewelryPriceLimit(price) {
+  if (isNaN(price) || price == 0) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Returns an JSON array of jewelry with the following filters:
  * type, color, style, price.
  * Example:
@@ -84,18 +142,38 @@ app.get("/jewelry", async function (req, res, next) {
   if (type || color || style || priceLimit) {
     qry += " WHERE ";
     if (type) {
+      if (!validJewelryType(type)) {
+        res.status(CLIENT_ERR_CODE);
+        next(Error("Bad client request: invalid jewelry type."));
+        return;
+      }
       queryRestrictions.push("prod_type = ? ");
       input.push(type);
     }
     if (color) {
+      if (!validJewelryColor(color)) {
+        res.status(CLIENT_ERR_CODE);
+        next(Error("Bad client request: invalid jewelry color."));
+        return;
+      }
       queryRestrictions.push("color = ? ");
       input.push(color);
     }
     if (style) {
+      if (!validJewelryStyle(style)) {
+        res.status(CLIENT_ERR_CODE);
+        next(Error("Bad client request: invalid jewelry style."));
+        return;
+      }
       queryRestrictions.push("style = ? ");
       input.push(style);
     }
     if (priceLimit) {
+      if (!validJewelryPriceLimit(priceLimit)) {
+        res.status(CLIENT_ERR_CODE);
+        next(Error("Bad client request: invalid jewelry price limit."));
+        return;
+      }
       queryRestrictions.push("price < ? ");
       input.push(priceLimit);
     }
