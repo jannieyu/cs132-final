@@ -123,11 +123,17 @@ app.get("/jewelry", async function (req, res) {
   // handling
   try {
     let val = await queryDB(qry, input);
+
     // Check for empty values and return 200/400 error
-    res.send(val);
+    if (val.length !== 0) {
+      res.send(val);
+    } else {
+      res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    }
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
+
 });
 
 // Endpoint to get information about just one product using id
@@ -138,7 +144,13 @@ app.get("/jewelry/:id", async function (req, res) {
 
   try {
     let val = await queryDB(qry, input);
-    res.send(val);
+
+    // Check for empty values and return 200/400 error
+    if (val.length !== 0) {
+      res.send(val);
+    } else {
+      res.status(CLIENT_ERR_CODE).send(CLIENT_ERROR);
+    }
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
@@ -198,7 +210,13 @@ app.get("/random", async function (req, res) {
   // handling
   try {
     let val = await queryDB(qry, NO_INPUT);
-    res.send(val);
+
+    // Check for empty values and return 200/400 error
+    if (val.length !== 0) {
+      res.send(val);
+    } else {
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
@@ -213,8 +231,14 @@ app.get("/faq", async function (req, res) {
   // handling
   try {
     let val = await queryDB(qry, NO_INPUT);
-    res.send(val);
+
+    // Check for empty values and return 200/400 error
+    if (val.length !== 0) {
+      res.send(val);
+    } else {
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
   } catch (err) {
-    console.error("Could not retrieve query inputs.");
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
 });
