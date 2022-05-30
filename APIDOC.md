@@ -31,7 +31,7 @@ query. No error code is sent in the response if the query returns empty. Instead
 an empty list is returned.
 
 **Error Output:**
-400 code error:
+400 code error: Bad client request: invalid jewelry type/color/style/price limit
 
 500 code error: Internal server error, please try again later.
 
@@ -58,10 +58,10 @@ query. A 400 error code is sent in the response if the query returns empty, sinc
 every valid id should result in a query result from the database.
 
 **Error Output:**
-If invalid query:
+If invalid query, 400 error:
 Bad client request: jewelry does not exist.
 
-If error is produced in retrieving from the database:
+If error is produced in retrieving from the database, 500 error:
 Internal server error, please try again later.
 
 ## contact
