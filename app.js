@@ -123,6 +123,7 @@ app.get("/jewelry", async function (req, res) {
   // handling
   try {
     let val = await queryDB(qry, input);
+    // Check for empty values and return 200/400 error
     res.send(val);
   } catch (err) {
     res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
