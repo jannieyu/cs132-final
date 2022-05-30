@@ -50,7 +50,7 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "", // fill in with password
+    password: "mysqlpw", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
