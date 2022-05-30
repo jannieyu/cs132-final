@@ -113,6 +113,7 @@ app.get("/jewelry", async function (req, res, next) {
       rows = await db.query(qry, input);
     }
     db.end();
+    res.send(rows);
   } catch (err) {
     res.status(SERVER_ERR_CODE);
     err.message = SERVER_ERROR;
