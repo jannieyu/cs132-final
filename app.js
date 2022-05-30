@@ -18,10 +18,10 @@ const multer = require("multer");
 
 const SERVER_ERR_CODE = 500;
 const CLIENT_ERR_CODE = 400;
-// const SERVER_ERROR =
-//   "Something went wrong on the server, please try again later.";
-// const CLIENT_ERROR =
-//   "Bad client request; missing parameters. Please try again.";
+const SERVER_ERROR =
+  "Something went wrong on the server, please try again later.";
+const CLIENT_ERROR =
+  "Bad client request; missing parameters. Please try again.";
 const NO_INPUT = [];
 
 // for parsing application/x-www-form-urlencoded
@@ -50,7 +50,7 @@ async function getDB() {
     host: "localhost", // fill in with server name
     port: "3306", // fill in with a port (will be different mac/pc)
     user: "root", // fill in with username
-    password: "", // fill in with password
+    password: "mysqlpw", // fill in with password
     database: "jewelrydb", // fill in with db name
   });
   return db;
@@ -96,6 +96,7 @@ app.get("/jewelry", async function (req, res) {
   let db;
   try {
     db = await getDB(); // connection error thrown in getDB();
+    console.log(db);
     let rows;
     if (input == NO_INPUT) {
       rows = await db.query(qry);
@@ -103,10 +104,10 @@ app.get("/jewelry", async function (req, res) {
       rows = await db.query(qry, input);
     }
     res.send(rows);
+    db.end();
   } catch (err) {
-    res.status(SERVER_ERR_CODE);
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-  db.end();
 });
 
 // Endpoint to get information about just one product using id
@@ -120,10 +121,10 @@ app.get("/jewelry/:id", async function (req, res) {
     db = await getDB();
     let rows = await db.query(qry, input);
     res.send(rows);
+    db.end();
   } catch (err) {
-    res.status(SERVER_ERR_CODE);
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-  db.end();
 });
 
 // Endpoint used to post information from a contact request
@@ -154,10 +155,10 @@ app.post("/contact", async function (req, res, next) {
     db = await getDB();
     let rows = await db.query(qry, input);
     res.send("Message successfully sent! We will look into it shortly.");
+    db.end();
   } catch (err) {
-    res.status(SERVER_ERR_CODE);
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-  db.end();
 });
 
 // Endpoint to get random jewelry set
@@ -187,10 +188,10 @@ app.get("/random", async function (req, res) {
     db = await getDB();
     let rows = await db.query(qry);
     res.send(rows);
+    db.end();
   } catch (err) {
-    res.status(SERVER_ERR_CODE);
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-  db.end();
 });
 
 // Endpoint to get faq
@@ -205,8 +206,8 @@ app.get("/faq", async function (req, res) {
     db = await getDB();
     let val = await db.query(qry);
     res.send(val);
+    db.end();
   } catch (err) {
-    res.status(SERVER_ERR_CODE);
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
   }
-  db.end();
 });
