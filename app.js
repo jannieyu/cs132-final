@@ -61,10 +61,7 @@ async function getDB() {
  * @returns boolean - true if valid, false otherwise
  */
 function validJewelryType(type) {
-  if (!(type == "necklace" || type == "ring" || type == "earring")) {
-    return false;
-  }
-  return true;
+  return (type === "necklace" || type === "ring" || type === "earring");
 }
 
 /**
@@ -73,20 +70,15 @@ function validJewelryType(type) {
  * @returns boolean - true if valid, false otherwise
  */
 function validJewelryColor(color) {
-  if (
-    !(
-      color == "red" ||
-      color == "yellow" ||
-      color == "gold" ||
-      color == "blue" ||
-      color == "silver" ||
-      color == "brown" ||
-      color == "dual"
-    )
-  ) {
-    return false;
-  }
-  return true;
+  return(
+      color === "red" ||
+      color === "yellow" ||
+      color === "gold" ||
+      color === "blue" ||
+      color === "silver" ||
+      color === "brown" ||
+      color === "dual"
+    );
 }
 
 /**
@@ -95,10 +87,7 @@ function validJewelryColor(color) {
  * @returns boolean - true if valid, false otherwise
  */
 function validJewelryStyle(style) {
-  if (!(style == "casual" || style == "formal")) {
-    return false;
-  }
-  return true;
+  return (style === "casual" || style === "formal");
 }
 
 /**
@@ -107,15 +96,16 @@ function validJewelryStyle(style) {
  * @returns boolean - true if valid, false otherwise
  */
 function validJewelryPriceLimit(price) {
-  if (isNaN(price) || price == 0) {
-    return false;
-  }
-  return true;
+  return !(isNaN(price) || price === 0);
 }
 
 /**
  * Returns an JSON array of jewelry with the following filters:
  * type, color, style, price.
+ * All query parameters in the body are optional (type, color, style, and price
+ * are all optional parameters). If no parameters are provided, i.e. the
+ * endpoint is just /jewelry, then all jewelry will be returned.
+ * 
  * Example:
  * [{"id":1,
  * "product_name":"Dual Band Ring",
@@ -201,6 +191,9 @@ app.get("/jewelry", async function (req, res, next) {
 
 /**
  * Returns an JSON array of one jewelry, queried by item ID.
+ * id must be a valid ID (i.e. the unique integer ID if a product in the 
+ * database) and is required.
+ * 
  * Example:
  * [{"id":1,
  * "product_name":"Dual Band Ring",
@@ -239,7 +232,8 @@ app.get("/jewelry/:id", async function (req, res, next) {
 
 /**
  * Endpoint to post contact information filled out by user.
- * Required POST parameters: name, email, message.
+ * Required POST parameters: name, email, message. 
+ * All body parameters (name, email, and message) are required (none optional).
  * Response type: text/plain
  * Returns 400 error if missing POST parameters
  * Sends a 500 error if DB failed
@@ -255,12 +249,7 @@ app.post("/contact", async function (req, res, next) {
   let qry =
     "INSERT INTO contact_info (contact_name, email, time_submitted, contact_msg)" +
     " VALUES(?, ?, ?, ?)";
-  let input = [
-    name.toString(),
-    email.toString(),
-    timestamp,
-    message.toString(),
-  ];
+  let input = [name, email, timestamp, message];
 
   if (!(name && email && message && timestamp)) {
     res.status(CLIENT_ERR_CODE);
@@ -275,7 +264,7 @@ app.post("/contact", async function (req, res, next) {
     let db;
     try {
       db = await getDB();
-      let rows = await db.query(qry, input);
+      db.query(qry, input);
       db.end();
       res.send("Message successfully sent! We will look into it shortly.");
     } catch (err) {
@@ -287,8 +276,8 @@ app.post("/contact", async function (req, res, next) {
 });
 
 /**
- * Returns an JSON array of a random jewelry set
- * with ring, necklace, earring item
+ * Returns an JSON array of a random jewelry set with ring, necklace, earring item.
+ * Requires/has no body parameters.
  * Returns 500 error if internal server errors.
  */
 app.get("/random", async function (req, res, next) {
@@ -334,6 +323,8 @@ app.get("/random", async function (req, res, next) {
 
 /**
  * Returns an JSON array of a FAQ questions & answers.
+ * Requires/has no body parameters.
+ * 
  * Example:
  * [{"faq_id":1,
  * "question":"How long does shipping take?",
