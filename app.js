@@ -100,26 +100,14 @@ function validJewelryPriceLimit(price) {
 }
 
 /**
- * Returns an JSON array of jewelry with the following filters:
- * type, color, style, price.
- * All query parameters in the body are optional (type, color, style, and price
- * are all optional parameters). If no parameters are provided, i.e. the
- * endpoint is just /jewelry, then all jewelry will be returned.
+ * Function to build a string used to query the jewelry database for the 
+ * appropriate data. The query string is based on the specified type, color,
+ * style, and price query parameters from the request, which are all optional.
+ * If no valid parameters are specified, all jewelry will be returned.
  * 
- * Example:
- * [{"id":1,
- * "product_name":"Dual Band Ring",
- * "descrip":"Why have one when you can have two?",
- * "img_path":"img/rings/dual_band_ring.jpg",
- * "prod_type":
- * "ring","price":29.99,
- * "color":"gold",
- * "style":"casual"}, ...]
- * Returns 400 error if invalid GET parameters.
- * Returns 500 error if internal server errors.
+ * @returns a string for querying the jewelry database
  */
-app.get("/jewelry", async function (req, res, next) {
-  res.type("json");
+function buildQueryString(req, res, next) {
   let type = req.query["type"];
   let color = req.query["color"];
   let style = req.query["style"];
@@ -170,6 +158,36 @@ app.get("/jewelry", async function (req, res, next) {
   }
   qry += queryRestrictions.join(" AND ");
 
+  res.query = qry;
+  res.input = input;
+
+  // Continue to jewelry endpoint 
+  next();
+}
+
+/**
+ * Returns an JSON array of jewelry with the following filters:
+ * type, color, style, price.
+ * All query parameters in the body are optional (type, color, style, and price
+ * are all optional parameters). If no parameters are provided, i.e. the
+ * endpoint is just /jewelry, then all jewelry will be returned.
+ * 
+ * Example:
+ * [{"id":1,
+ * "product_name":"Dual Band Ring",
+ * "descrip":"Why have one when you can have two?",
+ * "img_path":"img/rings/dual_band_ring.jpg",
+ * "prod_type":
+ * "ring","price":29.99,
+ * "color":"gold",
+ * "style":"casual"}, ...]
+ * Returns 400 error if invalid GET parameters.
+ * Returns 500 error if internal server errors.
+ */
+app.get("/jewelry", buildQueryString, async function (req, res, next) {
+  let qry = res.query;
+  let input = res.input;
+
   // Extract the promisified query results, otherwise handle error
   let db;
   try {
@@ -181,6 +199,7 @@ app.get("/jewelry", async function (req, res, next) {
       rows = await db.query(qry, input);
     }
     db.end();
+    res.type("json");
     res.send(rows);
   } catch (err) {
     res.status(SERVER_ERR_CODE);
@@ -207,7 +226,6 @@ app.get("/jewelry", async function (req, res, next) {
  * Returns 500 error if internal server errors.
  */
 app.get("/jewelry/:id", async function (req, res, next) {
-  res.type("json");
   let qry = "SELECT * FROM jewelry WHERE id=?";
   let input = [req.params.id];
 
@@ -218,6 +236,7 @@ app.get("/jewelry/:id", async function (req, res, next) {
     db.end();
     // Check for invalid item ID
     if (rows.length !== 0) {
+      res.type("json");
       res.send(rows);
     } else {
       res.status(CLIENT_ERR_CODE);
@@ -240,7 +259,6 @@ app.get("/jewelry/:id", async function (req, res, next) {
  * Sends a success message otherwise.
  */
 app.post("/contact", async function (req, res, next) {
-  res.type("text");
   let name = req.body.name;
   let email = req.body.email;
   let message = req.body.message;
@@ -266,6 +284,7 @@ app.post("/contact", async function (req, res, next) {
       db = await getDB();
       db.query(qry, input);
       db.end();
+      res.type("text");
       res.send("Message successfully sent! We will look into it shortly.");
     } catch (err) {
       res.status(SERVER_ERR_CODE);
@@ -281,8 +300,6 @@ app.post("/contact", async function (req, res, next) {
  * Returns 500 error if internal server errors.
  */
 app.get("/random", async function (req, res, next) {
-  res.type("json");
-
   // Return a random set of jewelry
   const unionString = "UNION ALL ";
   const randString = "ORDER BY RAND() LIMIT 1 ";
@@ -308,6 +325,7 @@ app.get("/random", async function (req, res, next) {
     db.end();
 
     if (rows.length !== 0) {
+      res.type("json");
       res.send(rows);
     } else {
       res.status(SERVER_ERR_CODE);
@@ -333,7 +351,6 @@ app.get("/random", async function (req, res, next) {
  * Returns 500 error if DB fails.
  */
 app.get("/faq", async function (req, res, next) {
-  res.type("json");
   let qry = "SELECT * FROM faq";
 
   // Extract the promisified query results, otherwise handle error
@@ -345,6 +362,7 @@ app.get("/faq", async function (req, res, next) {
 
     // Check for empty values and return 200/400 error
     if (rows.length !== 0) {
+      res.type("json");
       res.send(rows);
     } else {
       res.status(SERVER_ERR_CODE);
