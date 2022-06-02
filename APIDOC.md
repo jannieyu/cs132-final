@@ -4,6 +4,17 @@ a jewelry store. Data is provided for products, frequently asked questions of th
 store, and contact requests made by users. For more information, see endpoints 
 below.
 
+Summary of endpoints:
+* GET /jewelry?type=?&color=?&price=?&style=?
+* GET /jewelry/:id
+* GET /random
+* GET /faq
+* POST /contact
+
+In the current version of this API, all error responses are returned as plain text. 
+Any 500 errors represent a server-side issue and include a generic error message. 
+Any 400-level errors represent an invalid request by a client.
+
 ## jewelry
 **Request Format:** /jewelry?type=?&color=?&price=?&style=?
 
@@ -14,6 +25,16 @@ below.
 **Description:** Returns a list of jewelry meeting the requirements specified in the query parameters of the endpoint.
 
 **Example Request:** /jewelry?type=necklace&color=gold&price=20&style=formal
+
+**Parameters:** 
+* type=earring, type=necklace, type=ring (optional)
+  * Returns jewelry which is of the specified type
+* color=gold
+  * Returns any jewelry which is of the specified color 
+* price=20
+  * Returns any jewelry below the given price
+* style 
+  * Returns jewelry categorized as the specified style
 
 **Example Response:**
 ```json
@@ -85,6 +106,11 @@ unique ID in the database, as specified in the request parameters.
 
 **Example Request:** /jewelry/12
 
+**Parameters:**
+* id
+  * Returns the jewelry information as a json only for the product with the 
+  matching unique integer id
+
 **Example Response:**
 ```json
 [
@@ -123,7 +149,13 @@ Internal server error, please try again later.
 **Description:** Fulfills a post request for inserting a contact attempt's
 information in the contact table of the database.
 
-**Example Request:** 
+**Supported Parameters:**
+* POST body parameters:
+  * name (required) - name of website user
+  * email (required) - email of website user
+  * message (required) - message of website user
+
+**Example Use in JS:** 
 ```javascript
 // Post entry to server
 let url = "/contact";
